@@ -28,7 +28,6 @@ def audioToText(device):
     return final_text
 
 
-
 def main():
     while True: 
         final_text = ""
