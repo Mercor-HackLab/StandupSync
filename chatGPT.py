@@ -1,12 +1,12 @@
 import requests
 import json 
 
-from secretKey import KEY 
+from secretKey import API_KEY 
 
 def askGPT(prompt):
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': f'Bearer {KEY}',
+        'Authorization': f'Bearer {API_KEY}',
     }
 
     json_data = {
