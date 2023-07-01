@@ -4,6 +4,7 @@ import pyaudio
 import wave
 import keyboard
 from secretKey import AZURE_KEY
+from addNodeGoogleCalender import sendCalendarNotification
 
 MICROPHONE = 0 
 AUDIOSTREAM = 2
@@ -105,7 +106,9 @@ def main():
             print("No Text to process")
         else: 
             print("Final Transcribed Text:", final_text)
-            print(askGPT(f"Extract insights, summary, and action items from the transcription of a daily standup meeting (DSM): {final_text}"))
+            final_result = askGPT(f"Extract insights, summary, and action items from the transcription of a daily standup meeting (DSM): {final_text}")
+            print(final_result)
+            sendCalendarNotification(final_result)
 
 
 if __name__ == "__main__":

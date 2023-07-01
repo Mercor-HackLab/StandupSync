@@ -12,11 +12,6 @@ import pytz
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-DSMSummary = '''Swapmil: raised the pr for feature 1
-Sanidhiya: raised the pr for feature 2
-Aparna: raised the pr for feature 3
-'''
-
 
 def get_current_datetime():
     return datetime.datetime.now(datetime.timezone.utc)
@@ -26,25 +21,21 @@ def get_current_datetime_in_local_timezone():
     local_timezone = pytz.timezone('Asia/Kolkata')
     return current_datetime_utc.astimezone(local_timezone)
 
-def main():
+def sendCalendarNotification(DSMSummary):
     creds = None
-
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
-
         else:
             flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
 
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
-    
     try: 
         service = build('calendar', 'v3', credentials=creds)
-
         event = {
             'summary': 'DSM',
             'location': 'Bengaluru, India',
@@ -66,17 +57,18 @@ def main():
                 },
                 {
                     'email': 'aparnagoyal.0003@gmail.com'
+                },
+                {
+                    'email' : 'swapnilssingh06@gmail.com'
                 }
             ],
         }
-
         event = service.events().insert(calendarId='primary', body=event).execute()
-
         print('Event created: %s' % (event.get('htmlLink')))
-
         
     except HttpError as err:
         print("An error occured:", err)
 
-if __name__ == '__main__':
-    main()
+
+
+   
