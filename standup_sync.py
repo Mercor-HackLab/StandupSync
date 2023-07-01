@@ -3,7 +3,7 @@ from chatGPT import askGPT
 import pyaudio
 import wave
 import keyboard
-
+from secretKey import AZURE_KEY
 
 MICROPHONE = 0 
 AUDIOSTREAM = 2
@@ -55,15 +55,15 @@ def audioToText():
         with sr.AudioFile('output.wav') as src : 
             audio = r.record(src)
     except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        print("Could not request results from Azure Speech Recognition service; {0}".format(e))
     except sr.UnknownValueError:
         print("Unable to recognize speech")
 
     try: 
-        text = r.recognize_google(audio)
+        text = r.recognize_azure(audio,key=AZURE_KEY, location='centralindia')
         return text
     except sr.RequestError as e:
-        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        print("Could not request results from Azure Speech Recognition service; {0}".format(e))
     except sr.UnknownValueError:
         print("Unable to recognize speech")
         
@@ -98,7 +98,7 @@ def main():
         else : 
             print("Invalid Choice. Please try again.")
             continue
-        
+
         final_text = audioToText()
 
         if final_text == "" or final_text is None:
@@ -110,10 +110,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
