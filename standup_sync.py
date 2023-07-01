@@ -61,7 +61,7 @@ def audioToText():
         print("Unable to recognize speech")
 
     try: 
-        text = r.recognize_azure(audio,key=AZURE_KEY, location='centralindia')
+        text = r.recognize_azure(audio,key=AZURE_KEY,language="en-US", location='centralindia')
         return text
     except sr.RequestError as e:
         print("Could not request results from Azure Speech Recognition service; {0}".format(e))
