@@ -14,9 +14,8 @@ Integrate with Google Calendar to add the extracted tasks and reminders as event
 `python standup_sync.py`
 
 2. Choose the desired option from the menu:
-
-Enter 1 to record audio from the microphone.
-Enter 2 to record audio from the standard audio output.
+    - Enter 1 to record audio from the microphone.
+    - Enter 2 to record audio from the standard audio output.
 
 3. Speak clearly and provide your updates or discuss topics during the meeting.
 
