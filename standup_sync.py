@@ -58,7 +58,7 @@ def main():
             print("Invalid Choice. Please try again.")
 
         print("Final Transcribed Text:", final_text)
-        print(askGPT(f"Please give some recommendations this text and give a score out of 10: {final_text}"))
+        print(askGPT(f"Extract insights, summary, and action items from the transcription of a daily standup meeting (DSM): {final_text}"))
 
 
 if __name__ == "__main__":
