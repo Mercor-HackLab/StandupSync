@@ -3,8 +3,8 @@ from chatGPT import askGPT
 import pyaudio
 import wave
 import keyboard
-from secretKey import AZURE_KEY
-from addNodeGoogleCalender import sendCalendarNotification
+from secret_key import AZURE_KEY
+from google_calendar_integration import send_calendar_notification
 
 MICROPHONE = 0 
 AUDIOSTREAM = 2
