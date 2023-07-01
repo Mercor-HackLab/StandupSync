@@ -1,48 +1,78 @@
 import speech_recognition as sr
 from chatGPT import askGPT
+import pyaudio
+import wave
 import keyboard
+
 
 MICROPHONE = 0 
 AUDIOSTREAM = 2
+FORMAT = pyaudio.paInt16  
+CHANNELS = 1              
+RATE = 44100             
+CHUNK = 1024              
+RECORD_SECONDS = 0        
+WAVE_OUTPUT_FILENAME = "output.wav"
 
-def audioToText(device):
+def speechToText(device):
+    print("Listening ...... ")
+    print("Press q to stop recording ")
+    audio = pyaudio.PyAudio()
+    stream = audio.open(format=FORMAT, channels=CHANNELS,
+                        rate=RATE, input=True,
+                        frames_per_buffer=CHUNK,input_device_index=device)
+    frames = []
+
+    print("Recording started...")
+    while True:
+        data = stream.read(CHUNK)
+        frames.append(data)
+
+        if keyboard.is_pressed("q"):
+            print("done ....")
+            break
+        if RECORD_SECONDS and len(frames) / (RATE / CHUNK) >= RECORD_SECONDS:
+            break
+
+    print("Recording stopped.")
+
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
+    wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+    wf.setnchannels(CHANNELS)
+    wf.setsampwidth(audio.get_sample_size(FORMAT))
+    wf.setframerate(RATE)
+    wf.writeframes(b''.join(frames))
+    wf.close()
+
+    print("Audio saved to", WAVE_OUTPUT_FILENAME)
+
+
+def audioToText():
     r = sr.Recognizer()
-    final_text = ""
-    stop = False 
-    print("Press q button to stop recording.. ")
-    while True: 
-        try : 
-            with sr.Microphone(device_index=device) as src : 
-                audio = r.listen(src)
-                if keyboard.read_key() == "q":
-                    stop = True 
-                    raise UserWarning
-        except sr.RequestError as e:
-            print("Could not request results from Google Speech Recognition service; {0}".format(e))
-        except sr.UnknownValueError:
-            print("Unable to recognize speech")
-        except UserWarning as e:
-            print("User has pressed stop button")
-        
+    try : 
+        with sr.AudioFile('output.wav') as src : 
+            audio = r.record(src)
+    except sr.RequestError as e:
+        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+    except sr.UnknownValueError:
+        print("Unable to recognize speech")
 
-        try: 
-            text = r.recognize_google(audio)
-            print(text, end = ' ')
-            final_text += " " + text
-        except sr.RequestError as e:
-            print("Could not request results from Google Speech Recognition service; {0}".format(e))
-        except sr.UnknownValueError:
-            print("Unable to recognize speech")
+    try: 
+        text = r.recognize_google(audio)
+        return text
+    except sr.RequestError as e:
+        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+    except sr.UnknownValueError:
+        print("Unable to recognize speech")
         
-        if stop: break
-
-    return final_text
+    return ""
 
 
 def main():
     while True: 
         final_text = ""
-
         print("""
             Welcome to DSM Handler : 
             Enter 1 to Record from your Microphone 
@@ -55,11 +85,11 @@ def main():
 
         if choice == '1' : 
             print("Taking Audio from Microphone as an Input")
-            final_text = audioToText(MICROPHONE)
-
+            speechToText(MICROPHONE)
+ 
         elif choice == '2' : 
             print("Taking Audio from Input Stream")
-            final_text = audioToText(AUDIOSTREAM)
+            speechToText(AUDIOSTREAM)
             
         elif choice == '3':
             print("Exiting the program...")
@@ -68,8 +98,10 @@ def main():
         else : 
             print("Invalid Choice. Please try again.")
             continue
+        
+        final_text = audioToText()
 
-        if final_text == "":
+        if final_text == "" or final_text is None:
             print("No Text to process")
         else: 
             print("Final Transcribed Text:", final_text)
