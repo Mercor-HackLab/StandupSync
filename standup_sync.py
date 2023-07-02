@@ -108,7 +108,7 @@ def main():
             print("Final Transcribed Text:", final_text)
             final_result = askGPT(f"Extract insights, summary, and action items from the transcription of a daily standup meeting (DSM): {final_text}")
             print(final_result)
-            sendCalendarNotification(final_result)
+            send_calendar_notification(final_result)
 
 
 if __name__ == "__main__":
