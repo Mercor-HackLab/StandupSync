@@ -15,12 +15,17 @@ def index():
 def process_audio():
     # Assuming the audio file is sent in the request
     audio_file = request.files['audio']
-    # language = request.get_data('language')
-    # print(language)
+    language = request.form.get('language')
+
+    if language not in languages.keys():
+        return jsonify({
+            "Error" : "Error in selected Language "
+        })
+    
     audio_file.save('output1.wav')  # Save the audio file
 
     # Perform speech-to-text
-    final_text = audioToText(languages['en-IN'])
+    final_text = audioToText(languages[language])
 
     if final_text == "" or final_text is None:
         response = {
@@ -41,7 +46,7 @@ def process_audio():
         }
 
     # Delete the saved audio file
-    os.remove('output.wav')
+    os.remove('output1.wav')
 
     return jsonify(response)
 
