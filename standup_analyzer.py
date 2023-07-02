@@ -11,8 +11,8 @@ def analyze_weekly_data():
         return
 
     service = build('calendar', 'v3', credentials=creds)
-    start_datetime = get_current_datetime_in_local_timezone() - dt.timedelta(days=7)
-    end_datetime = get_current_datetime_in_local_timezone()
+    start_datetime = get_current_datetime_in_local_timezone() - dt.timedelta(days=8)
+    end_datetime = get_current_datetime_in_local_timezone() + dt.timedelta(hours=5)
 
     try:
         events_result = service.events().list(
@@ -39,10 +39,16 @@ def analyze_weekly_data():
                 data += f"Event Start Time: {start_date}\n"
                 data += f"Event Description: {description}\n"
 
-        prompt = f"What are the areas of improvement for employees based on the following DSM events:\n{data}\n"
+        prompt = f"What are the areas of improvement for each employee individually to perform better based on the following DSM events be gender netural:\n{data}\n"
         gpt_result = askGPT(prompt)
-        print("Areas of Improvement for Employees:")
+        print("\nAreas of Improvement for Employees:")
         print(gpt_result)
+        
+        # answer user question
+        input_question = input("\nDo you have any questions for me?\n")
+        prompt = [f"\n{input_question}\n based on  this data {data}\n"]
+        gpt_result2 = askGPT(prompt)
+        print("Answer:",gpt_result2)
     
     except HttpError as err:
         logging.error('An error occurred while fetching events from Google Calendar: %s', err)
