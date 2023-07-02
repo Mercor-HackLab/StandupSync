@@ -18,8 +18,8 @@ WAVE_OUTPUT_FILENAME = "output.wav"
 LANGUAGE_INPUT = "en-US"
 
 def speechToText(device):
-    print("Listening ...... ")
-    print("Press q to stop recording ")
+    print("Listening... ")
+    print("Press 'q' to stop.")
     audio = pyaudio.PyAudio()
     stream = audio.open(format=FORMAT, channels=CHANNELS,
                         rate=RATE, input=True,
@@ -32,7 +32,7 @@ def speechToText(device):
         frames.append(data)
 
         if keyboard.is_pressed("q"):
-            print("done ....")
+            print("done...")
             break
         if RECORD_SECONDS and len(frames) / (RATE / CHUNK) >= RECORD_SECONDS:
             break
@@ -108,6 +108,10 @@ def main():
             speechToText(AUDIOSTREAM)
             
         elif choice == '3':
+            print("Analyzing Weekly Data and Making Performance Evaluations")
+            analyze_weekly_data()
+
+        elif choice == '4':
             print("Exiting the program...")
             break
 
@@ -115,7 +119,8 @@ def main():
             print("Invalid Choice. Please try again.")
             continue
 
-        final_text = audioToText(LANGUAGE_INPUT)
+        if choice in ['1', '2']:
+            final_text = audioToText(LANGUAGE_INPUT)
 
         if final_text == "" or final_text is None:
             print("No Text to process")
