@@ -5,6 +5,7 @@ import wave
 import keyboard
 from secret_key import AZURE_KEY
 from google_calendar_integration import send_calendar_notification
+from languages import languages
 
 MICROPHONE = 0 
 AUDIOSTREAM = 2
@@ -14,6 +15,7 @@ RATE = 44100
 CHUNK = 1024              
 RECORD_SECONDS = 0        
 WAVE_OUTPUT_FILENAME = "output.wav"
+LANGUAGE_INPUT = "en-US"
 
 def speechToText(device):
     print("Listening ...... ")
@@ -61,7 +63,7 @@ def audioToText():
         print("Unable to recognize speech")
 
     try: 
-        text = r.recognize_azure(audio,key=AZURE_KEY,language="en-US", location='centralindia')
+        text = r.recognize_azure(audio,key=AZURE_KEY,language=LANGUAGE_INPUT, location='centralindia')
         return text
     except sr.RequestError as e:
         print("Could not request results from Azure Speech Recognition service; {0}".format(e))
@@ -73,6 +75,19 @@ def audioToText():
 
 def main():
     while True: 
+        print("Available Languages:")
+        for index, language in enumerate(languages, start=1):
+            print(f"{index}. {language}")
+
+        selected_language = int(input("Enter the number corresponding to your preferred language: "))
+        if selected_language < 1 or selected_language > len(languages):
+            print("Invalid input! Please try again.")
+        else:
+            language_name = list(languages.keys())[selected_language - 1]
+            language_code = languages[language_name]
+            LANGUAGE_INPUT = language_code
+            print(f"Selected language: {language_name}")
+        
         final_text = ""
         print("""
             Welcome to DSM Handler : 
