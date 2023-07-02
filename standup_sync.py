@@ -52,7 +52,7 @@ def speechToText(device):
     print("Audio saved to", WAVE_OUTPUT_FILENAME)
 
 
-def audioToText():
+def audioToText(language):
     r = sr.Recognizer()
     try : 
         with sr.AudioFile('output.wav') as src : 
@@ -63,7 +63,7 @@ def audioToText():
         print("Unable to recognize speech")
 
     try: 
-        text = r.recognize_azure(audio,key=AZURE_KEY,language=LANGUAGE_INPUT, location='centralindia')
+        text = r.recognize_azure(audio,key=AZURE_KEY,language=language, location='centralindia')
         return text
     except sr.RequestError as e:
         print("Could not request results from Azure Speech Recognition service; {0}".format(e))
@@ -115,7 +115,7 @@ def main():
             print("Invalid Choice. Please try again.")
             continue
 
-        final_text = audioToText()
+        final_text = audioToText(LANGUAGE_INPUT)
 
         if final_text == "" or final_text is None:
             print("No Text to process")

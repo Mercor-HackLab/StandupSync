@@ -3,6 +3,7 @@ from chatGPT import askGPT
 from google_calendar_integration import send_calendar_notification
 import os
 from standup_sync import audioToText
+from languages import languages
 
 app = Flask(__name__)
 
@@ -14,10 +15,12 @@ def index():
 def process_audio():
     # Assuming the audio file is sent in the request
     audio_file = request.files['audio']
+    # language = request.get_data('language')
+    # print(language)
     audio_file.save('output1.wav')  # Save the audio file
 
     # Perform speech-to-text
-    final_text = audioToText()
+    final_text = audioToText(languages['en-IN'])
 
     if final_text == "" or final_text is None:
         response = {
@@ -43,4 +46,4 @@ def process_audio():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
