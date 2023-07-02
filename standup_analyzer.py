@@ -1,12 +1,7 @@
-import os.path
 import logging
 import datetime as dt
-import pytz
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+from chatGPT import askGPT
+from google_calendar_integration import *
 
 def analyze_weekly_data():
     creds = authorize_google_calendar()
@@ -35,15 +30,16 @@ def analyze_weekly_data():
 
     data = ''
     for event in events:
-        print(event)
         summary = event.get('summary')
-        start_date = event.get('start').get('dateTime')
-        data += f"Event Summary: {summary}\n"
-        data += f"Event Start Time: {start_date}\n"
+        if(summary == 'DSM'):
+            description = event.get('description')
+            start_date = event.get('start').get('dateTime')
+            data += f"Event Start Time: {start_date}\n"
+            data += f"Event Description: {description}\n"
 
-    prompt = f"Extract Top Performer based on the {data}."
+    prompt = f"Who is the top Performer based on the {data} ."
     gpt_result = askGPT(prompt)
     print("Top Performer: ", gpt_result)
 
-
-    
+# if __name__ == "__main__":
+#     analyze_weekly_data()
