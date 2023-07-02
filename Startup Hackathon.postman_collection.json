@@ -1,0 +1,88 @@
+{
+	"info": {
+		"_postman_id": "d67a9869-95c5-4056-a9f3-9aa1c0c54ab6",
+		"name": "Startup Hackathon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14056226"
+	},
+	"item": [
+		{
+			"name": "Send Data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "audio",
+							"type": "file",
+							"src": "/D:/Projects/Startup Waali Hackathon/output.wav"
+						},
+						{
+							"key": "language",
+							"value": "English (India)",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/process_audio",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"process_audio"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Analyse Weekly Data",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Ask Question",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "question",
+							"value": "Who is the top performer?",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/questions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"questions"
+					],
+					"query": [
+						{
+							"key": "question",
+							"value": "hi",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

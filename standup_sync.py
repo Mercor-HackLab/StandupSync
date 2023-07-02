@@ -5,6 +5,7 @@ import wave
 import keyboard
 from secret_key import AZURE_KEY
 from google_calendar_integration import send_calendar_notification
+from standup_analyzer import analyze_weekly_data
 from languages import languages
 
 MICROPHONE = 0 
@@ -93,7 +94,8 @@ def main():
             Welcome to DSM Handler : 
             Enter 1 to Record from your Microphone 
             Enter 2 to Record from Standard Audio Output 
-            Enter 3 to Exit
+            Enter 3 to Anaylze Weekly Data 
+            Enter 4 to Exit
         """)
 
 
@@ -107,9 +109,9 @@ def main():
             print("Taking Audio from Input Stream")
             speechToText(AUDIOSTREAM)
             
-        # elif choice == '3':
-        #     print("Analyzing Weekly Data and Making Performance Evaluations")
-        #     analyze_weekly_data()
+        elif choice == '3':
+            print("Analyzing Weekly Data and Making Performance Evaluations")
+            analyze_weekly_data()
 
         elif choice == '4':
             print("Exiting the program...")

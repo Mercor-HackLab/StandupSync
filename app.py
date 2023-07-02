@@ -4,6 +4,7 @@ from google_calendar_integration import send_calendar_notification
 import os
 from standup_sync import audioToText
 from languages import languages
+from standup_analyzer import analyze_weekly_data,askQuestion
 
 app = Flask(__name__)
 
@@ -49,6 +50,21 @@ def process_audio():
     os.remove('output1.wav')
 
     return jsonify(response)
+
+@app.route('/analyse_weekly_data',methods = ['GET'])
+def anaylzeWeeklyData():
+    return jsonify({
+        'results' : analyze_weekly_data()
+    })
+
+@app.route('/questions',methods = ['POST'])
+def questions():
+    question = request.form.get('question')
+    response = askQuestion(question)
+    return jsonify({
+        'result' : response
+    })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
