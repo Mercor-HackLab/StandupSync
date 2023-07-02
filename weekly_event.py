@@ -33,29 +33,17 @@ def analyze_weekly_data():
         print('No events found for the past week.')
         return
 
-    performance_data = {}
-
+    data = ''
     for event in events:
-        attendees = event.get('attendees', [])
-        for attendee in attendees:
-            email = attendee.get('email')
-            if email not in performance_data:
-                performance_data[email] = {'total_duration': 0, 'num_events': 0}
-            duration = event.get('duration', EVENT_DURATION)
-            performance_data[email]['total_duration'] += duration
-            performance_data[email]['num_events'] += 1
+        print(event)
+        summary = event.get('summary')
+        start_date = event.get('start').get('dateTime')
+        data += f"Event Summary: {summary}\n"
+        data += f"Event Start Time: {start_date}\n"
 
-    sorted_performance_data = sorted(performance_data.items(), key=lambda x: x[1]['total_duration'], reverse=True)
-
-    top_performers = sorted_performance_data[:3]  # Select the top 3 performers
-
-    for email, data in top_performers:
-        total_duration = data['total_duration']
-        num_events = data['num_events']
-        print(f"Performing GPT analysis for top performer - Email: {email}, Total Duration: {total_duration} minutes, Number of Events: {num_events}")
-        prompt = f"Extract insights, summary, and action items for the top performer with email: {email}"
-        gpt_result = askGPT(prompt)
-        print(gpt_result)
+    prompt = f"Extract Top Performer based on the {data}."
+    gpt_result = askGPT(prompt)
+    print("Top Performer: ", gpt_result)
 
 
     
