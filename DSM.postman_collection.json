@@ -27,12 +27,13 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:5000/process_audio",
-					"protocol": "http",
+					"raw": "https://meetingsync123.azurewebsites.net/process_audio",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"meetingsync123",
+						"azurewebsites",
+						"net"
 					],
-					"port": "5000",
 					"path": [
 						"process_audio"
 					]
@@ -44,7 +45,19 @@
 			"name": "Analyse Weekly Data",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "https://meetingsync123.azurewebsites.net/analyse_weekly_data",
+					"protocol": "https",
+					"host": [
+						"meetingsync123",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"analyse_weekly_data"
+					]
+				}
 			},
 			"response": []
 		},
@@ -58,18 +71,19 @@
 					"formdata": [
 						{
 							"key": "question",
-							"value": "Who is the top performer?",
+							"value": "who is facing blockers?",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost:5000/questions",
-					"protocol": "http",
+					"raw": "https://meetingsync123.azurewebsites.net/questions",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"meetingsync123",
+						"azurewebsites",
+						"net"
 					],
-					"port": "5000",
 					"path": [
 						"questions"
 					],
