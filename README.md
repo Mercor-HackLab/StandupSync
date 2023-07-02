@@ -2,6 +2,8 @@
 
 StandupSync is a Python-based application that aims to automate the process of generating meeting transcripts and extracting important insights and tasks from daily standup meetings in offices. It utilizes speech-to-text conversion and a language model to provide an efficient and convenient solution for teams.
 
+## Track - LLM API Endpoint
+
 ## Problem Statement
 - Lack of comprehensive software for tracking and analyzing Daily Stand-Up Meetings (DSMs).
 - Challenges in improving collaboration and individual contributions without systematic DSM insights. 
@@ -16,6 +18,17 @@ StandupSync is a Python-based application that aims to automate the process of g
 - Utilize the GPT API for natural language processing tasks and analysis..
 - The API is fluent in US-English, Spanish and majority of our Indic-Regional languages as well.
 - Seamlessly integrate with team members' Google Calendars to automatically add notes and reminders based on extracted DSM insights.
+
+## API ENDPOINTS
+https://meetingsync123.azurewebsites.net/process_audio
+https://meetingsync123.azurewebsites.net/analyse_weekly_data
+https://meetingsync123.azurewebsites.net/questions
+
+## Video Link
+[Video Link](https://drive.google.com/drive/folders/18GDRqg_0BOjwRme-AA4GUBGqKSfp_mHt?usp=sharing) 
+
+## Presentation Link
+[Presentation Link](https://docs.google.com/presentation/d/11PkhfxdJocP7GWlwcuSNR-8Kr3nF9AEv/edit?usp=sharing&ouid=110734208587736988558&rtpof=true&sd=true)
 
 ## Workflow
 - User selects the preferred language.
