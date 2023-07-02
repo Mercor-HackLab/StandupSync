@@ -107,9 +107,9 @@ def main():
             print("Taking Audio from Input Stream")
             speechToText(AUDIOSTREAM)
             
-        elif choice == '3':
-            print("Analyzing Weekly Data and Making Performance Evaluations")
-            analyze_weekly_data()
+        # elif choice == '3':
+        #     print("Analyzing Weekly Data and Making Performance Evaluations")
+        #     analyze_weekly_data()
 
         elif choice == '4':
             print("Exiting the program...")
