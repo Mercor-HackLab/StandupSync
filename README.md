@@ -27,13 +27,13 @@ StandupSync is a Python-based application that aims to automate the process of g
 - Enabling weekly analysis based on Google Calendar data.
 
 ## Tech Stack/ Methodology
-Python: For server-side development.
-Flask: For building the API server.
-OpenAI GPT API: For Natural Language Processing and Text Generation.
-Google Calendar API: For notes creation and notifications.
-SpeechRecognition Library: For speech-to-text conversion.
-JSON and RESTful API for data exchange. 
-Git for version control and collaborative development.
+- Python: For server-side development.
+- Flask: For building the API server.
+- OpenAI GPT API: For Natural Language Processing and Text Generation.
+- Google Calendar API: For notes creation and notifications.
+- SpeechRecognition Library: For speech-to-text conversion.
+- JSON and RESTful API for data exchange. 
+- Git for version control and collaborative development.
 
 ## Use Cases:
 - Automated transcription and analysis of DSMs.
