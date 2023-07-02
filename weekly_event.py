@@ -1,136 +1,61 @@
-import speech_recognition as sr
-from chatGPT import askGPT
-import pyaudio
-import wave
-import keyboard
-from secret_key import AZURE_KEY
-from google_calendar_integration import send_calendar_notification
-from languages import languages
+import os.path
+import logging
+import datetime as dt
+import pytz
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
-MICROPHONE = 0 
-AUDIOSTREAM = 2
-FORMAT = pyaudio.paInt16  
-CHANNELS = 1              
-RATE = 44100             
-CHUNK = 1024              
-RECORD_SECONDS = 0        
-WAVE_OUTPUT_FILENAME = "output.wav"
-LANGUAGE_INPUT = "en-US"
+def analyze_weekly_data():
+    creds = authorize_google_calendar()
+    if not creds or not creds.valid:
+        logging.error('Failed to obtain valid credentials for Google Calendar.')
+        return
 
-def speechToText(device):
-    print("Listening... ")
-    print("Press 'q' to stop.")
-    audio = pyaudio.PyAudio()
-    stream = audio.open(format=FORMAT, channels=CHANNELS,
-                        rate=RATE, input=True,
-                        frames_per_buffer=CHUNK,input_device_index=device)
-    frames = []
+    service = build('calendar', 'v3', credentials=creds)
+    start_datetime = get_current_datetime_in_local_timezone() - dt.timedelta(days=7)
+    end_datetime = get_current_datetime_in_local_timezone()
 
-    print("Recording started...")
-    while True:
-        data = stream.read(CHUNK)
-        frames.append(data)
+    events_result = service.events().list(
+        calendarId=CALENDAR_ID,
+        timeMin=start_datetime.isoformat(),
+        timeMax=end_datetime.isoformat(),
+        maxResults=2500,  # Adjust the number of events to retrieve
+        singleEvents=True,
+        orderBy='startTime'
+    ).execute()
 
-        if keyboard.is_pressed("q"):
-            print("done...")
-            break
-        if RECORD_SECONDS and len(frames) / (RATE / CHUNK) >= RECORD_SECONDS:
-            break
+    events = events_result.get('items', [])
 
-    print("Recording stopped.")
+    if not events:
+        print('No events found for the past week.')
+        return
 
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
-    wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-    wf.setnchannels(CHANNELS)
-    wf.setsampwidth(audio.get_sample_size(FORMAT))
-    wf.setframerate(RATE)
-    wf.writeframes(b''.join(frames))
-    wf.close()
+    performance_data = {}
 
-    print("Audio saved to", WAVE_OUTPUT_FILENAME)
+    for event in events:
+        attendees = event.get('attendees', [])
+        for attendee in attendees:
+            email = attendee.get('email')
+            if email not in performance_data:
+                performance_data[email] = {'total_duration': 0, 'num_events': 0}
+            duration = event.get('duration', EVENT_DURATION)
+            performance_data[email]['total_duration'] += duration
+            performance_data[email]['num_events'] += 1
 
+    sorted_performance_data = sorted(performance_data.items(), key=lambda x: x[1]['total_duration'], reverse=True)
 
-def audioToText(language):
-    r = sr.Recognizer()
-    try : 
-        with sr.AudioFile('output.wav') as src : 
-            audio = r.record(src)
-    except sr.RequestError as e:
-        print("Could not request results from Azure Speech Recognition service; {0}".format(e))
-    except sr.UnknownValueError:
-        print("Unable to recognize speech")
+    top_performers = sorted_performance_data[:3]  # Select the top 3 performers
 
-    try: 
-        text = r.recognize_azure(audio,key=AZURE_KEY,language=language, location='centralindia')
-        return text
-    except sr.RequestError as e:
-        print("Could not request results from Azure Speech Recognition service; {0}".format(e))
-    except sr.UnknownValueError:
-        print("Unable to recognize speech")
-        
-    return ""
+    for email, data in top_performers:
+        total_duration = data['total_duration']
+        num_events = data['num_events']
+        print(f"Performing GPT analysis for top performer - Email: {email}, Total Duration: {total_duration} minutes, Number of Events: {num_events}")
+        prompt = f"Extract insights, summary, and action items for the top performer with email: {email}"
+        gpt_result = askGPT(prompt)
+        print(gpt_result)
 
 
-def main():
-    while True: 
-        print("Available Languages:")
-        for index, language in enumerate(languages, start=1):
-            print(f"{index}. {language}")
-
-        selected_language = int(input("Enter the number corresponding to your preferred language: "))
-        if selected_language < 1 or selected_language > len(languages):
-            print("Invalid input! Please try again.")
-        else:
-            language_name = list(languages.keys())[selected_language - 1]
-            language_code = languages[language_name]
-            LANGUAGE_INPUT = language_code
-            print(f"Selected language: {language_name}")
-        
-        final_text = ""
-        print("""
-            Welcome to DSM Handler : 
-            Enter 1 to Record from your Microphone 
-            Enter 2 to Record from Standard Audio Output 
-            Enter 3 to Exit
-        """)
-
-
-        choice = input("Your Choice: ")
-
-        if choice == '1' : 
-            print("Taking Audio from Microphone as an Input")
-            speechToText(MICROPHONE)
- 
-        elif choice == '2' : 
-            print("Taking Audio from Input Stream")
-            speechToText(AUDIOSTREAM)
-            
-
-        elif choice == '3':
-            print("Analyzing Weekly Data and Making Performance Evaluations")
-            # analyze_weekly_data()
-
-        elif choice == '4':
-            print("Exiting the program...")
-            break
-
-        else : 
-            print("Invalid Choice. Please try again.")
-            continue
-
-        if choice in ['1', '2']:
-            final_text = audioToText(LANGUAGE_INPUT)
-
-        if final_text == "" or final_text is None:
-            print("No Text to process")
-        else: 
-            print("Final Transcribed Text:", final_text)
-            final_result = askGPT(f"Extract insights, summary, and action items from the transcription of a daily standup meeting (DSM): {final_text}")
-            print(final_result)
-            send_calendar_notification(final_result)
-            
-
-if __name__ == "__main__":
-    main()
+    
