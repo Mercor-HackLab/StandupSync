@@ -1,7 +1,6 @@
 import requests
 import json 
-
-from secretKey import API_KEY 
+from secret_key import API_KEY 
 
 def askGPT(prompt):
     headers = {
