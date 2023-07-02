@@ -1,6 +1,7 @@
 import logging
 import datetime as dt
 from chatGPT import askGPT
+from googleapiclient.errors import HttpError
 from google_calendar_integration import *
 
 def analyze_weekly_data():
